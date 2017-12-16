@@ -78,6 +78,14 @@
             $document.unbind('mouseup.thumb');
           });
         };
+
+        /**
+        * @function thumbStyle
+        * @desc Updates the thumb location using css style
+        */
+        scope.thumbStyle = function() {
+          return {left: percentString()};
+        };
       }
     };
   }
