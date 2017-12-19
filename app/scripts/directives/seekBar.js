@@ -19,7 +19,9 @@
       templateUrl: '/templates/directives/seek_bar.html', // URL of template
       replace: true, // replace el, false: replace el contents
       restrict: 'E', // restrict to an element directive
-      scope: { }, // create new scope for directive
+      scope: { // create new scope for directive
+        onChange: '&' // a way to execute an expression in the context of the parent scope.
+      },
       link: function(scope, element, attributes) {
         // directive logic to return
         scope.value = 0;
@@ -30,6 +32,14 @@
         * @type {Object}
         */
         var seekBar = $(element);
+
+        attributes.$observe('value', function(newValue) {
+          scope.value = newValue;
+        });
+
+        attributes.$observe('max', function(newValue) {
+          scope.max = newValue;
+        });
 
         /**
         * @function percentString
@@ -59,6 +69,7 @@
         scope.onClickSeekBar = function(event) {
           var percent = calculatePercent(seekBar, event);
           scope.value = percent * scope.max;
+          notifyOnChange(scope.value);
         };
 
         /**
@@ -70,6 +81,7 @@
             var percent = calculatePercent(seekBar, event);
             scope.$apply(function() {
               scope.value = percent * scope.max;
+              notifyOnChange(scope.value);
             });
           });
 
@@ -77,6 +89,16 @@
             $document.unbind('mousemove.thumb');
             $document.unbind('mouseup.thumb');
           });
+        };
+
+        /**
+        * @function notifyOnChange
+        * @desc Only if onChange = function, set the value attribute
+        */
+        var notifyOnChange = function(newValue) {
+          if (typeof scope.onChange === 'function') {
+            scope.onChange({value: newValue});
+          }
         };
 
         /**
