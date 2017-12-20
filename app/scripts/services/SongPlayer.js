@@ -153,6 +153,15 @@
       }
     };
 
+    SongPlayer.volume = 80; // set initial volume
+    SongPlayer.max = 100; // set max volume
+
+    SongPlayer.setVolume = function(volume) {
+      if (currentBuzzObject) {
+        currentBuzzObject.setVolume(volume);
+      }
+    };
+
     return SongPlayer;
   } // SongPlayer()
 
