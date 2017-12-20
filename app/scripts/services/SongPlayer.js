@@ -47,10 +47,23 @@
       currentBuzzObject.bind('timeupdate', function() {
         $rootScope.$apply(function() {
           SongPlayer.currentTime = currentBuzzObject.getTime();
+          autoPlayNextSong(song);
         });
       });
 
       SongPlayer.currentSong = song;
+    };
+
+    /**
+    * @function autoPlayNextSong
+    * @desc If current song is finished, auto play the next song
+    */
+    var autoPlayNextSong = function(song) {
+      if(song.duration == SongPlayer.currentTime) {
+        setSong(song);
+        SongPlayer.next();
+        SongPlayer.setVolume(SongPlayer.volume);
+      }
     };
 
     /**
@@ -61,8 +74,13 @@
     var playSong = function(song) {
       currentBuzzObject.play();
       song.playing = true;
+      SongPlayer.setVolume(SongPlayer.volume);
     };
 
+    /**
+    * @function playSong
+    * @desc Stop currentBuzzObject & set song.playing state
+    */
     var stopSong = function() {
       currentBuzzObject.stop();
       SongPlayer.currentSong.playing = null;
@@ -79,6 +97,30 @@
     * @type {Number}
     */
     SongPlayer.currentTime = null;
+
+    /**
+    * @desc Set initial volume
+    * @type {Number}
+    */
+    SongPlayer.volume = 80;
+
+    /**
+    * @desc Set initial max volume
+    * @type {Number}
+    */
+    SongPlayer.max = 100;
+
+    /**
+    * @desc Player is muted
+    * @type {Boolean}
+    */
+    SongPlayer.muted = false;
+
+    /**
+    * @desc Stores volume before muting
+    * @type {Number}
+    */
+    SongPlayer.previousVolume = 0;
 
     /**
     * @function play
@@ -106,6 +148,26 @@
       song = song || SongPlayer.currentSong;
       currentBuzzObject.pause();
       song.playing = false;
+    };
+
+    /**
+    * @function mute
+    * @desc Mute currently playing song
+    * @param {Object} song
+    */
+    SongPlayer.mute = function() {
+      SongPlayer.previousVolume = SongPlayer.volume;
+      SongPlayer.volume = 0;
+      SongPlayer.setVolume(SongPlayer.volume);
+    };
+
+    /**
+    * @function unmute
+    * @desc Unmute currently playing song
+    */
+    SongPlayer.unmute = function() {
+      SongPlayer.volume = SongPlayer.previousVolume;
+      SongPlayer.setVolume(SongPlayer.volume);
     };
 
     /**
@@ -153,13 +215,22 @@
       }
     };
 
-    SongPlayer.volume = 80; // set initial volume
-    SongPlayer.max = 100; // set max volume
-
     SongPlayer.setVolume = function(volume) {
       if (currentBuzzObject) {
         currentBuzzObject.setVolume(volume);
       }
+
+      if (SongPlayer.volume > 0) {
+        SongPlayer.muted = false;
+      } else {
+        SongPlayer.muted = true;
+      }
+
+      currentBuzzObject.bind('volumechange', function() {
+        $rootScope.$apply(function() {
+          SongPlayer.volume = currentBuzzObject.getVolume();
+        });
+      });
     };
 
     return SongPlayer;
