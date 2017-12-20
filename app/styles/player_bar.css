@@ -109,7 +109,8 @@
 
 .seek-bar .fill {
     background: white;
-    width: 36%;
+    /*width: 36%;*/
+    width: 0%;
     height: 0.25rem;
     border-radius: 2px;
 }
@@ -119,7 +120,8 @@
     height: 0.5rem;
     width: 0.5rem;
     background: white;
-    left: 36%;
+    /*left: 36%;*/
+    left: 0%;
     margin-left: -0.25rem;
     top: 50%;
     margin-top: -0.25rem;
@@ -172,13 +174,13 @@
         margin: 0 auto;
         padding: 0;
         width: 100%;
-        text-align: center;   
+        text-align: center;
     }
-    
+
     .player-bar .main-controls {
         min-height: 3.5rem;
     }
-    
+
     .player-bar .currently-playing {
         min-height: 2.5rem;
     }
@@ -187,11 +189,11 @@
         min-height: 3.5rem;
     }
 
-    .artist-name, 
+    .artist-name,
     .song-name {
         display: none;
     }
-    
+
     .artist-song-mobile {
         display: block;
     }
